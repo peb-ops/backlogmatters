@@ -66,7 +66,12 @@ export function App() {
 /** `accounts` is the feature flag for sign-in and administration; when off, none of that is shown. */
 function Shell({ user, accounts, onSignedOut }: { user: User; accounts: boolean; onSignedOut: () => void }) {
   const [page, id, tab] = useRoute();
-  const signOut = () => api('POST', '/auth/logout').then(onSignedOut);
+  // Go back to the project list so the next person to sign in does not land on this user's page.
+  const signOut = () =>
+    api('POST', '/auth/logout').then(() => {
+      location.hash = '#/';
+      onSignedOut();
+    });
 
   let content = <Projects user={user} accounts={accounts} />;
   if (page === 'p' && Number(id)) content = <ProjectPage key={id} id={Number(id)} tab={tab || 'backlog'} user={user} accounts={accounts} />;

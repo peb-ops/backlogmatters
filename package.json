@@ -15,7 +15,7 @@
   "dependencies": {
     "better-sqlite3": "^12.11.1",
     "express": "^4.21.2",
-    "zod": "^3.24.1"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@dnd-kit/core": "^6.3.1",
