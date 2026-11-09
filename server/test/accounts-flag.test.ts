@@ -55,6 +55,13 @@ describe('accounts flag off', () => {
     expect((await call(off, 'PUT', '/projects/1/members/1', { role: 'editor' })).status).toBe(404);
   });
 
+  it('offers a backup download without signing in', async () => {
+    const res = await fetch(off + '/backup');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-disposition')).toMatch(/attachment; filename="backlogmatters-backup-\d{4}-\d{2}-\d{2}\.db"/);
+    expect(Buffer.from(await res.arrayBuffer()).subarray(0, 15).toString()).toBe('SQLite format 3');
+  });
+
   it('only answers requests addressed to this PC', async () => {
     // fetch does not allow overriding Host, so send the request by hand.
     const statusFor = (host: string) =>
@@ -88,5 +95,14 @@ describe('turning the flag on later', () => {
     expect(projects.map((p) => [p.name, p.ownerName, p.itemCount])).toEqual([['Solo', 'Local user', 1]]);
     expect((await call<User[]>(on, 'GET', '/admin/users', undefined, asBoss)).data.map((u) => u.username)).toEqual(['boss']);
     expect((await call(on, 'PATCH', `/projects/${projects[0].id}`, { ownerId: setup.data.id }, asBoss)).status).toBe(200);
+  });
+
+  it('keeps the backup download for administrators only', async () => {
+    expect((await fetch(on + '/backup')).status).toBe(401);
+    const boss = await call(on, 'POST', '/auth/login', { username: 'boss', password: 'correct horse' });
+    await call(on, 'POST', '/admin/users', { username: 'max', displayName: 'Max', password: 'password1', role: 'manager' }, { Cookie: boss.cookie });
+    const max = await call(on, 'POST', '/auth/login', { username: 'max', password: 'password1' });
+    expect((await fetch(on + '/backup', { headers: { Cookie: max.cookie } })).status).toBe(403);
+    expect((await fetch(on + '/backup', { headers: { Cookie: boss.cookie } })).status).toBe(200);
   });
 });

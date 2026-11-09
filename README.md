@@ -10,13 +10,14 @@ Local-first product backlog management for project managers. It organizes backlo
 - **Dependencies:** blocked-by links, with warnings when rank or release order contradicts them.
 - **Grooming health:** flags unestimated, stale, duplicate and incomplete items.
 - **Import / export:** CSV (including Jira and Trello column names) and a full-fidelity JSON file.
+- **Backup:** download the whole database as one file, from the Projects page (or the administration page when accounts are on).
 - **Accounts (optional, off by default):** administrator, manager and viewer roles, per-project sharing, and an administration page.
 
 ## Quick start
 
 Double-click `BacklogMatters.bat`. It sets up whatever is missing and then starts the app at http://localhost:4780:
 
-1. Uses the Node.js on this PC if it is version 20 or newer; otherwise downloads a private copy into `.runtime/` (checksum verified, nothing installed system-wide).
+1. Uses the Node.js on this PC if it is version 22 or newer; otherwise downloads a private copy into `.runtime/` (checksum verified, nothing installed system-wide).
 2. Installs dependencies on the first run, and again if the Node version changes.
 3. Builds the app if there is no build yet.
 
@@ -24,12 +25,13 @@ After changing the code, run `BacklogMatters.bat rebuild`.
 
 ## Develop
 
-Requires Node 20 or newer on 64-bit Windows.
+Requires Node 22 or newer on 64-bit Windows.
 
 ```
 npm install
 npm run dev        # API on :4780, web client with hot reload on http://localhost:5173
 npm test           # server logic and API tests
+npm run test:ui    # builds, then clicks through every screen in Edge or Chrome (set BM_BROWSER to use another browser)
 npm run typecheck
 ```
 

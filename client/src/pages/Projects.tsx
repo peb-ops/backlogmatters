@@ -33,6 +33,11 @@ export function Projects({ user, accounts }: { user: User; accounts: boolean }) 
             Show archived ({archivedCount})
           </label>
         )}
+        {!accounts && (
+          <a className="button" href="/api/backup" title="A copy of every project in one file. Keep it somewhere safe.">
+            Download backup
+          </a>
+        )}
         {user.role !== 'viewer' && (
           <button className="primary" onClick={() => setCreating(true)}>
             New project

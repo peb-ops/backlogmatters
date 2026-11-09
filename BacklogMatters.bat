@@ -4,23 +4,32 @@ rem
 rem   BacklogMatters.bat            set up whatever is missing, then start
 rem   BacklogMatters.bat rebuild    same, but rebuild the app first (use after changing the code)
 rem
-rem It uses the Node.js already on this PC if it is version 20 or newer. Otherwise it
+rem It uses the Node.js already on this PC if it is version 22 or newer. Otherwise it
 rem downloads a private copy into the .runtime folder; nothing is installed system-wide.
 
 setlocal
 title BacklogMatters
 cd /d "%~dp0"
 
-set "NODE_VERSION=22.12.0"
+set "NODE_VERSION=24.22.2"
 set "RUNTIME=%~dp0.runtime"
 
 rem ---- 1. Node.js ----
 
-where node >nul 2>nul && node -e "process.exit(+process.versions.node.split('.')[0]>=20?0:1)" 2>nul && goto modules
-if exist "%RUNTIME%\node.exe" goto use_private_node
+where node >nul 2>nul && node -e "process.exit(+process.versions.node.split('.')[0]>=22?0:1)" 2>nul && goto modules
 
+rem A private copy from an earlier run is reused only if it is the version this file asks for.
+if not exist "%RUNTIME%\node.exe" goto download_node
+set "PRIVATE_VERSION="
+for /f %%v in ('""%RUNTIME%\node.exe" -p process.versions.node"') do set "PRIVATE_VERSION=%%v"
+if "%PRIVATE_VERSION%"=="%NODE_VERSION%" goto use_private_node
 echo.
-echo   Node.js 20 or newer was not found on this PC.
+echo   Replacing the private copy of Node.js (v%PRIVATE_VERSION%) with v%NODE_VERSION%...
+rmdir /s /q "%RUNTIME%"
+
+:download_node
+echo.
+echo   Node.js 22 or newer was not found on this PC.
 echo   Downloading a private copy (v%NODE_VERSION%, about 30 MB)...
 echo.
 set "ZIP=node-v%NODE_VERSION%-win-x64.zip"

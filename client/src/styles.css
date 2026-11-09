@@ -584,6 +584,11 @@ a.card.project h2 {
   background: color-mix(in srgb, var(--ok) 16%, var(--surface));
 }
 
+/* Between quick win (green) and big bet (orange), as medium size is between small and large. */
+.zone-core {
+  background: color-mix(in srgb, var(--ok) 8%, color-mix(in srgb, var(--should) 8%, var(--surface)));
+}
+
 .zone-bet {
   background: color-mix(in srgb, var(--should) 14%, var(--surface));
 }

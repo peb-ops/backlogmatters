@@ -11,7 +11,11 @@ Starting
 
 Your data
   Everything is saved in the "data" folder next to this file.
-  To back up, stop BacklogMatters and copy that folder.
+  To back up, click "Download backup" on the Projects page (or, with
+  sign-in on, on the Administration page). You can also stop
+  BacklogMatters and copy the data folder.
+  To restore a backup, stop BacklogMatters and put the file in the data
+  folder, named backlogmatters.db.
   To move to another PC, copy this whole folder.
 
 Sign-in and administration (off by default)

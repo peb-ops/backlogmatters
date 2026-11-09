@@ -4,7 +4,7 @@ import express, { type ErrorRequestHandler } from 'express';
 import { ZodError } from 'zod';
 import { BUILD_HEADER, BUILD_ID } from '../../shared/build';
 import { HttpError, loadUser, requireAppHeader } from './auth';
-import { authRoutes } from './routes/auth';
+import { authRoutes, backupRoute } from './routes/auth';
 import { projectRoutes } from './routes/projects';
 import type { Store } from './store';
 
@@ -52,6 +52,7 @@ export function createApp(store: Store, options: AppOptions = {}) {
   api.use(express.json({ limit: '10mb' }));
   api.use(loadUser(store, accounts));
   authRoutes(api, store, accounts);
+  backupRoute(api, store, accounts);
   projectRoutes(api, store, accounts);
   api.use((_req, _res, next) => next(new HttpError(404, 'Not found')));
   app.use('/api', api);

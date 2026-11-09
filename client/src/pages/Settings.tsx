@@ -8,6 +8,7 @@ export function Settings({ ctx }: { ctx: ProjectCtx }) {
   return (
     <>
       <Transfer ctx={ctx} />
+      {!ctx.accounts && <Backup />}
       {ctx.isOwner ? (
         <>
           <Details ctx={ctx} />
@@ -62,6 +63,24 @@ function Transfer({ ctx }: { ctx: ProjectCtx }) {
           {result.skipped > 0 && ` Skipped ${result.skipped} rows without a title.`}
         </p>
       )}
+    </section>
+  );
+}
+
+/** Shown only with accounts off; with accounts on, administrators download backups from the administration page. */
+function Backup() {
+  return (
+    <section className="card">
+      <h2>Backup</h2>
+      <p className="muted">
+        Downloads a copy of the whole database: every project, not only this one. Keep it somewhere safe, such as another drive or a cloud
+        folder. To restore it, close BacklogMatters and put the file in the data folder as backlogmatters.db.
+      </p>
+      <div className="toolbar">
+        <a className="button" href="/api/backup">
+          Download backup
+        </a>
+      </div>
     </section>
   );
 }

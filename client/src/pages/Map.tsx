@@ -16,7 +16,7 @@ function zone(moscow: Moscow, sizeIndex: number): { name: string; className: str
   if (moscow === 'could') return large ? { name: 'Reconsider', className: 'zone-avoid' } : { name: 'Fill-in', className: 'zone-fill' };
   if (small) return { name: 'Quick win', className: 'zone-quick' };
   if (large) return { name: 'Big bet', className: 'zone-bet' };
-  return { name: '', className: '' };
+  return { name: 'Core work', className: 'zone-core' };
 }
 
 export function PriorityMap({ ctx }: { ctx: ProjectCtx }) {
@@ -42,6 +42,7 @@ export function PriorityMap({ ctx }: { ctx: ProjectCtx }) {
       </p>
       <div className="legend">
         <span className="zone-quick">Quick win: needed and small</span>
+        <span className="zone-core">Core work: needed and medium-sized</span>
         <span className="zone-bet">Big bet: needed but large, plan it carefully</span>
         <span className="zone-fill">Fill-in: optional and small</span>
         <span className="zone-avoid">Reconsider: optional and large</span>

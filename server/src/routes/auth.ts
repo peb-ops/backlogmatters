@@ -1,4 +1,4 @@
-import type { Router } from 'express';
+import type { Response, Router } from 'express';
 import { z } from 'zod';
 import type { AuthState } from '../../../shared/types';
 import {
@@ -104,10 +104,23 @@ export function authRoutes(r: Router, store: Store, accounts: boolean): void {
     res.status(204).end();
   });
 
-  r.get('/admin/backup', requireAdmin, (_req, res) => {
-    const date = new Date().toISOString().slice(0, 10);
-    res.setHeader('Content-Type', 'application/octet-stream');
-    res.setHeader('Content-Disposition', `attachment; filename="backlogmatters-backup-${date}.db"`);
-    res.send(store.backup());
+  r.get('/admin/backup', requireAdmin, (_req, res) => sendBackup(store, res));
+}
+
+/**
+ * The whole database as one file. With accounts off the only user is the person at this PC, so anyone may
+ * download it; with accounts on it holds everyone's data, so administrators only.
+ */
+export function backupRoute(r: Router, store: Store, accounts: boolean): void {
+  r.get('/backup', requireUser, (req, res, next) => {
+    if (accounts && req.user!.role !== 'admin') return next(new HttpError(403, 'Administrators only'));
+    sendBackup(store, res);
   });
+}
+
+function sendBackup(store: Store, res: Response): void {
+  const date = new Date().toISOString().slice(0, 10);
+  res.setHeader('Content-Type', 'application/octet-stream');
+  res.setHeader('Content-Disposition', `attachment; filename="backlogmatters-backup-${date}.db"`);
+  res.send(store.backup());
 }
